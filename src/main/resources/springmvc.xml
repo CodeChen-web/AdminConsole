@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--开启注解扫描，只扫描Controller注解-->
+    <context:component-scan base-package="com.atlantis">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 配置视图解析器 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- JSP文件所在的目录 -->
+        <property name="prefix" value="WEB-INF/pages/"/>
+        <!-- 文件的后缀名 -->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 设置静态资源不被拦截 -->
+    <mvc:resources location="/css/" mapping="/css/**"/> <!-- 样式 -->
+    <mvc:resources location="/images/" mapping="/images/**"/> <!-- 图片 -->
+    <mvc:resources location="/jquery/" mapping="/jquery/**"/> <!-- javascript -->
+    <mvc:resources location="/bootstrap-3.3.7/" mapping="/bootstrap-3.3.7/**"/>
+    <mvc:resources location="/echarts/" mapping="/echarts/**"/>
+    <mvc:resources location="/fonts/" mapping="/fonts/**"/>
+
+    <!-- 配置拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!-- 先匹配所有路径，然后排除不需要检查的路径 -->
+            <mvc:mapping path="/**"/><!-- 要拦截的具体方法 -->
+            <!-- 放行与登录相关的请求 -->
+            <mvc:exclude-mapping path="/css/login.css"/>
+            <mvc:exclude-mapping path="/login"/><!-- 不要拦截的具体方法 -->
+            <!-- 配置拦截器对象 -->
+            <bean class="com.atlantis.interceptor.LoginInterceptor" />
+        </mvc:interceptor>
+        <!-- 可配置多个拦截器，按顺序执行 -->
+    </mvc:interceptors>
+
+    <!-- 上传文件 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760" />
+    </bean>
+
+    <!-- 开启SpringMVC注解支持 -->
+    <mvc:annotation-driven/>
+</beans>

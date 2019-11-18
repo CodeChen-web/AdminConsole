@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atlantis.dao.ProductDao">
+    <!-- 定义一个resultMap,商品表关联分类表 ,将整个查询的结果映射到com.atlantis.domain.Product中 -->
+    <resultMap id="ProductResultMap" type="Product">
+        <!-- id:唯一标识 column：商品信息的唯 一标识 列 property：商品信息的唯 一标识 列所映射到Product中哪个属性
+            result:普通标识 -->
+        <id column="pid" property="pid" />
+        <result property="pname" column="pname" />
+        <result property="pnum" column="pnum" />
+        <result property="pprice" column="pprice" />
+        <result property="pdate" column="pdate" />
+        <result property="pdetails" column="pdetails" />
+        <result property="pexplain" column="pexplain" />
+        <result property="img" column="img" />
+        <result property="flag" column="flag" />
+
+        <!-- association：用于映射关联查询单个对象的信息 property：要将关联查询的分类信息映射到实体类Product中的category属性
+            javaType：映射到实体类Category的哪个属性 -->
+        <association property="category" javaType="Category">
+            <id property="cid" column="cid" />
+            <result property="cname" column="cname" />
+            <result property="cexplain" column="cexplain" />
+        </association>
+    </resultMap>
+
+    <select id="findAllProduct" resultMap="ProductResultMap">
+        select * from product p,category c where p.cid=c.cid
+    </select>
+
+    <select id="findProductByPid" parameterType="int" resultMap="ProductResultMap">
+        select * from product where pid=#{pid}
+    </select>
+
+    <select id="findProductOfSearch" parameterType="String" resultMap="ProductResultMap">
+        select * from product p,category c where p.cid=c.cid and concat(pid,pname) like #{search}
+    </select>
+
+    <insert id="addProduct" parameterType="Product">
+        insert into product values (null,#{pname},#{pnum},#{pprice},NOW(),#{pdetails},#{pexplain},#{img},#{flag},#{category.cid})
+    </insert>
+
+    <update id="updateProductFlag" parameterType="Product">
+        update product set flag = #{flag} where pid = #{pid}
+    </update>
+
+    <delete id="deleteProduct" parameterType="int">
+        delete from product where pid = #{pid}
+    </delete>
+
+    <update id="updateProduct" parameterType="Product">
+        update product set
+		pname = #{pname},pnum = #{pnum},pprice = #{pprice},pdetails = #{pdetails},
+		pexplain = #{pexplain},img = #{img},flag = '1',cid=#{category.cid}
+		where pid=#{pid}
+    </update>
+</mapper>

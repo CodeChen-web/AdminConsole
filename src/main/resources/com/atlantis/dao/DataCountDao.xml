@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atlantis.dao.DataCountDao">
+    <select id="getUserCountOfDay" parameterType="int" resultType="Integer">
+		SELECT count(*) FROM user WHERE DATEDIFF(udate,NOW())=#{day}
+	</select>
+
+    <select id="getAllCategoryName" resultType="Category">
+		SELECT * FROM category
+	</select>
+
+    <select id="getCategoryOfProduct" resultType="Integer">
+		SELECT count(*) FROM product where cid = #{cid}
+	</select>
+
+    <select id="getUnSuccessOrderCount" parameterType="int" resultType="Integer">
+		SELECT count(*) FROM orders WHERE DATEDIFF(odate,NOW())=#{day} and state != 200
+	</select>
+
+    <select id="getFailOrderCount" parameterType="int" resultType="Integer">
+		SELECT count(*) FROM orders WHERE DATEDIFF(odate,NOW())=#{day} and state = 404
+	</select>
+
+    <select id="getSuccessOrderCount" parameterType="int" resultType="Integer">
+		SELECT count(*) FROM orders WHERE DATEDIFF(odate,NOW())=#{day} and state = 200
+	</select>
+
+    <select id="getAllOrderCount" parameterType="int" resultType="Integer">
+		SELECT count(*) FROM orders WHERE DATEDIFF(odate,NOW())=#{day}
+	</select>
+
+    <select id="getOrderTotal" parameterType="int" resultType="Double">
+		SELECT SUM(total) FROM orders WHERE DATEDIFF(odate,NOW())=#{day} and state != 404
+	</select>
+</mapper>

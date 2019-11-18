@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atlantis.dao.AdminDao">
+    <select id="findAdminOfLogin" parameterType="Admin" resultType="Admin">
+        select * from admin where aname=#{aname} and apassword=#{apassword}
+    </select>
+
+    <update id="updateAdminOfPassword" parameterType="Admin">
+		update admin set apassword = #{apassword} where aname = #{aname}
+	</update>
+
+    <select id="findAllAdmin" resultType="Admin">
+        select * from admin
+    </select>
+</mapper>

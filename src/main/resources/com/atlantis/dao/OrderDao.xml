@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atlantis.dao.OrderDao">
+    <select id="findAllOrderOfUserInfo" resultType="OrderOfUserInfo">
+        SELECT u.uid,o.oid,o.odate,o.remarks,o.total,a.consignee,a.phone,a.content,o.state
+		FROM user u,address a,orders o where o.uid = u.uid AND o.addressid = a.addressid
+    </select>
+
+    <select id="findOrderOfUserInfoBySearch" parameterType="String" resultType="OrderOfUserInfo">
+        SELECT u.uid,o.oid,o.odate,o.remarks,o.total,a.consignee,a.phone,a.content,o.state
+		FROM user u,address a,orders o where o.uid = u.uid AND o.addressid = a.addressid
+		and concat(o.oid,a.consignee,a.phone) like #{search}
+    </select>
+
+    <select id="findOrderItemOid" parameterType="String" resultType="OrderItemOfProduct">
+        SELECT o.oid,p.pid,p.pname,p.pprice,p.pdetails,o.count,o.subtotal
+		FROM orderitem o,product p WHERE o.pid=p.pid and o.oid = #{oid} ORDER BY p.pid ASC
+    </select>
+
+    <update id="updateOrderStateByOid" parameterType="String">
+        UPDATE orders SET state = #{state} where oid = #{oid}
+    </update>
+</mapper>
